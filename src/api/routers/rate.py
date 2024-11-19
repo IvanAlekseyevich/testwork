@@ -23,6 +23,6 @@ async def load_insurance_rates(rates: schemas.CargoData) -> None:
             for cargo_data in cargo_dates:
                 cargo_type = await cargo_repository.get_or_create(cargo_data.cargo_type)
                 await rate_repository.create_or_update(
-                    cargo_id=cargo_type.cargo_id,
+                    cargo_id=cargo_type.id,
                     date=date,
                     rate=cargo_data.rate)

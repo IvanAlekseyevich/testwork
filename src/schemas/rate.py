@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class Cargo(BaseModel):
@@ -9,4 +9,4 @@ class Cargo(BaseModel):
 
 
 class CargoData(RootModel):
-    root: Dict[date, List[Cargo]]
+    root: dict[date, list[Cargo]]

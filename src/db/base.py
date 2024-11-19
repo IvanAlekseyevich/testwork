@@ -51,17 +51,16 @@ class RateRepository(BaseRepository[Rate]):
 
     async def create_or_update(self, cargo_id: int, date: datetime.date, rate: float) -> Rate:
         instance = await self._session.scalar(
-            select(Rate).where(self._model.cargo_id == cargo_id and self._model.date == date)
+            select(Rate).where(self._model.cargo_id == cargo_id).where(self._model.date == date)
         )
         if instance:
             instance.rate = rate
             await self._session.commit()
+            return instance
         try:
             instance = self._model.new_rate(cargo_id=cargo_id, date=date, rate=rate)
-            # instance.rate_id = random.randint(1, 1000)
             self._session.add(instance)
             await self._session.commit()
-            print('complete')
         except Exception as e:
             await self._session.rollback()
             raise exceptions.RateCantCreateError(cargo_id=cargo_id, date=date, rate=rate) from e
