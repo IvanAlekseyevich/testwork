@@ -5,7 +5,7 @@ from pydantic import BaseModel, RootModel
 
 class Cargo(BaseModel):
     cargo_type: str
-    rate: float
+    rate: str
 
 
 class CargoData(RootModel):

@@ -26,10 +26,18 @@ class CargoRepository(BaseRepository[Cargo]):
     def __init__(self) -> None:
         super().__init__(Cargo, async_session())
 
-    async def get_or_create(self, cargo_type: str) -> Cargo:
-        instance = await self._session.scalar(select(Cargo).where(self._model.cargo_type == cargo_type))
-        if instance:
+    async def get(self, cargo_type: str) -> Cargo:
+        try:
+            instance = await self._session.scalar(select(Cargo).where(self._model.cargo_type == cargo_type))
             return instance
+        except Exception:
+            raise Exception
+
+    async def create(self, cargo_type: str) -> Cargo:
+        cargo = await caself.get(cargo_type)
+        if cargo:
+            return cargo
+
         try:
             instance = self._model.new_cargo(cargo_type=cargo_type)
             self._session.add(instance)
@@ -69,6 +77,17 @@ class RateRepository(BaseRepository[Rate]):
             return instance
         finally:
             await self._session.close()
+
+    async def get_earliest_rate_by_date(self, cargo_id: int, date: datetime.date) -> int:
+        instance = await self._session.scalar(
+            select(Rate).where(self._model.cargo_id == cargo_id)
+            .where(self._model.date <= date)
+            .order_by(self._model.date.desc())
+            .limit(1)
+        )
+        if instance:
+            return instance.rate
+        return 0
 
 
 cargo_repository = CargoRepository()

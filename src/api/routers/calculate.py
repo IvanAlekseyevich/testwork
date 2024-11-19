@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 
 from src import schemas
+from src.db import cargo_repository
+from src.services import calculate_price
 
 router_calculate = APIRouter(prefix="/calculate", tags=["calculate"])
 
@@ -12,9 +14,8 @@ router_calculate = APIRouter(prefix="/calculate", tags=["calculate"])
     summary="Returns the cost of cargo insurance on the specified date.",
 )
 async def update_rate(
-        rates: schemas.CostOfInsurance,
+        data: schemas.CostOfInsurance,
 ) -> int:
-    '''
-    Aallows the user to obtain the cost of cargo insurance as of a certain date.
-    '''
-    pass
+    cargo = await cargo_repository.get(data.cargo_type)
+    price = await calculate_price(cargo.id, data.date, float(data.price))
+    return price

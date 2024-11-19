@@ -13,16 +13,14 @@ router_rate = APIRouter(prefix="/rate", tags=["rate"])
     summary="Loading insurance rates by cargo type.",
 )
 async def load_insurance_rates(rates: schemas.CargoData) -> None:
-    '''
-    Allows you to upload cargo rates to the user.
-    '''
     if not rates:
         return
-    for start_date in rates:
-        for date, cargo_dates in start_date[1].items():
-            for cargo_data in cargo_dates:
-                cargo_type = await cargo_repository.get_or_create(cargo_data.cargo_type)
-                await rate_repository.create_or_update(
-                    cargo_id=cargo_type.id,
-                    date=date,
-                    rate=cargo_data.rate)
+    rates = rates.root
+    for date, cargo_dates in rates.items():
+        for cargo_data in cargo_dates:
+            cargo_type = await cargo_repository.get_or_create(cargo_data.cargo_type)
+            await rate_repository.create_or_update(
+                cargo_id=cargo_type.id,
+                date=date,
+                rate=float(cargo_data.rate)
+            )
