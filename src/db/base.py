@@ -34,7 +34,7 @@ class CargoRepository(BaseRepository[Cargo]):
             raise Exception
 
     async def create(self, cargo_type: str) -> Cargo:
-        cargo = await caself.get(cargo_type)
+        cargo = await self.get(cargo_type)
         if cargo:
             return cargo
 
@@ -78,7 +78,7 @@ class RateRepository(BaseRepository[Rate]):
         finally:
             await self._session.close()
 
-    async def get_earliest_rate_by_date(self, cargo_id: int, date: datetime.date) -> int:
+    async def get_earliest_date_rate(self, cargo_id: int, date: datetime.date) -> int:
         instance = await self._session.scalar(
             select(Rate).where(self._model.cargo_id == cargo_id)
             .where(self._model.date <= date)
