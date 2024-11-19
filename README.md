@@ -1,1 +1,1 @@
-# testwork
+# ТЗ Python_SMIT
