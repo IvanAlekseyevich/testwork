@@ -1,7 +1,6 @@
 import datetime
-from typing import List, Optional
 
-from sqlalchemy import BigInteger, ForeignKey, func
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -11,7 +10,6 @@ class Base(DeclarativeBase):
 
 
 class Rate(Base):
-
     __tablename__ = "rate"
     rate_id: Mapped[int] = mapped_column(primary_key=True)
     cargo_id: Mapped[int] = mapped_column(ForeignKey("cargo.cargo_id"))
@@ -38,7 +36,6 @@ class Rate(Base):
 
 
 class Cargo(Base):
-
     __tablename__ = "cargo"
     cargo_id: Mapped[int] = mapped_column(primary_key=True)
     cargo_type: Mapped[str] = mapped_column(unique=True)
@@ -54,4 +51,3 @@ class Cargo(Base):
             f"cargo_id={self.cargo_id!r}, "
             f"cargo_type={self.cargo_type!r})"
         )
-

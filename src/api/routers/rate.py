@@ -1,30 +1,9 @@
 from fastapi import APIRouter
+
 from src import schemas
 from src.db import cargo_repository, rate_repository
-from datetime import date
+
 router_rate = APIRouter(prefix="/rate", tags=["rate"])
-
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List, Dict
-from pydantic import BaseModel, RootModel
-
-class Cargo(BaseModel):
-    cargo_type: str
-    rate: str
-
-class CargoData(RootModel):
-    root: Dict[date, List[Cargo]]
-
-# @app.post("/cargo-data/")
-# async def receive_cargo_data(data: CargoData):
-#     return {"received_data": data}
-
-# Для запуска приложения:
-# if __name__ == "__main__":
-#     import uvicorn
-
 
 
 @router_rate.post(
@@ -33,7 +12,7 @@ class CargoData(RootModel):
     status_code=201,
     summary="Loading insurance rates by cargo type.",
 )
-async def load_insurance_rates(rates: CargoData) -> None:
+async def load_insurance_rates(rates: schemas.CargoData) -> None:
     '''
     Allows you to upload cargo rates to the user.
     '''
